@@ -1,5 +1,6 @@
 from random import randint
 from random import choice
+from functools import reduce
 import sys
 
 def printHelp():
@@ -48,7 +49,7 @@ def ohneWiederholung(from_,to_,anzahl):
 #       (standart)  Ohne  Wiederholung: Beispiel Lose in der Lotterie
 #   Verarbeitungsfunktion 
 #       (-f)        s  -> Summe (standart)
-#       (-f)        m  -> Minus
+#       (-f)        m  -> Minus with abs
 
 # Parse Commandline Arguments
 commandlineArguments = sys.argv[1:]
@@ -69,11 +70,12 @@ if(len(commandlineArguments) > 4):
         wid   = True
     if(commandlineArguments[4 + wid*1] == "-f"):
         func = True
-        func = commandlineArguments[5]
+        funcT = commandlineArguments[5 + wid*1]
 
 
 # ----------------------
 
+dic = {}
 for x in range(rep):
     out = []
 
@@ -84,8 +86,19 @@ for x in range(rep):
 
     if(func):
         if(funcT == "s"):
-            print(sum(out))
+            if(sum(out) in dic):
+                dic[sum(out)] += 1
+            else:
+                dic[sum(out)] = 1
         elif(funcT == "m"):
-            print(sum(map(lambda x: -x,out)))
+            if(abs(reduce(lambda a,b: a-b,out)) in dic):
+                dic[abs(reduce(lambda a,b: a-b,out))] += 1
+            else:
+                dic[abs(reduce(lambda a,b: a-b,out))] = 1
     else:
-        print(str(out))
+        if(out in dic):
+            dic[out]+=1
+        else:
+            dic[out]=1
+
+print(dic)
