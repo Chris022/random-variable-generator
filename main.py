@@ -2,6 +2,18 @@ from random import randint
 from random import choice
 import sys
 
+def printHelp():
+    print("<repeat Experiment for x Times> ")
+    print("<from>")
+    print("<to>")
+    print("<anzahl der Wiederholung>")
+    print("Arten von Zufallsexperimenten")
+    print("    (-m)        Mit Wiederholung: Beispiel Würfel")
+    print("    (standart)  Ohne  Wiederholung: Beispiel Lose in der Lotterie")
+    print("Verarbeitungsfunktion ")
+    print("    (-f)        s  -> Summe (standart)")
+    print("    (-f)        m  -> Minus")
+
 def randomInt(from_,to_):
     return randint(from_,to_)
 
@@ -26,28 +38,54 @@ def ohneWiederholung(from_,to_,anzahl):
 
 
 
-# Argumente: 
+# Argumente:
+#   <repeat Experiment for x Times>
 #   <from>
 #   <to>
 #   <anzahl der Wiederholung>
 #   Arten von Zufallsexperimenten
 #       (-m)        Mit Wiederholung: Beispiel Würfel
 #       (standart)  Ohne  Wiederholung: Beispiel Lose in der Lotterie
+#   Verarbeitungsfunktion 
+#       (-f)        s  -> Summe (standart)
+#       (-f)        m  -> Minus
 
 # Parse Commandline Arguments
 commandlineArguments = sys.argv[1:]
+try:
+    rep   = int(commandlineArguments[0])
+    from_ = int(commandlineArguments[1])
+    to_   = int(commandlineArguments[2])
+    anz   = int(commandlineArguments[3])
+    wid   = False
+    func  = False
+    funcT = "s"
+except:
+    printHelp()
+    exit(1)
 
-from_ = int(commandlineArguments[0])
-to_   = int(commandlineArguments[1])
-anz   = int(commandlineArguments[2])
-wid   = False
+if(len(commandlineArguments) > 4):
+    if(commandlineArguments[4] == "-m"):
+        wid   = True
+    if(commandlineArguments[4 + wid*1] == "-f"):
+        func = True
+        func = commandlineArguments[5]
 
-if(len(commandlineArguments) > 3):
-    wid   = True
 
 # ----------------------
 
-if(wid):
-    print(str(mitWiederholung(from_,to_,anz)))
-else:
-    print(str(ohneWiederholung(from_,to_,anz)))
+for x in range(rep):
+    out = []
+
+    if(wid):
+        out = mitWiederholung(from_,to_,anz)
+    else:
+        out = ohneWiederholung(from_,to_,anz)
+
+    if(func):
+        if(funcT == "s"):
+            print(sum(out))
+        elif(funcT == "m"):
+            print(sum(map(lambda x: -x,out)))
+    else:
+        print(str(out))
